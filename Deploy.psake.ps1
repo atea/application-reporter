@@ -473,5 +473,5 @@ Task DeployCode -depends FunctionsApp{
     Write-Information "Uploading to '$apiUrl'"
     Invoke-RestMethod -Uri $apiUrl -Headers @{Authorization=("Basic {0}" -f $base64AuthInfo)} -Method Post -InFile $TestFile -ContentType "multipart/form-data"
     Write-Information "Go to https://$($script:FunctionsName).scm.azurewebsites.net -> Debug menu at the top -> CMD -> Site -> wwwroot to check the contents"
-    remove-item -Path $TempFolder.FullName -ErrorAction Stop -Force
+    remove-item -Path $TempFolder.FullName -ErrorAction Stop -Force -Recurse
 }
