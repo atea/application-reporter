@@ -1,1 +1,1 @@
-& "$PSScriptRoot\ApplicationReport.ps1" -ReportingURl 'http://localhost:7071/api/Upload' -Force:$false
+& "$PSScriptRoot\ApplicationReport.ps1" -ReportingURl 'http://localhost:7071/api/Upload' -Force:$true

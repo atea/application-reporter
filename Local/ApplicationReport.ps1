@@ -93,7 +93,8 @@ if($LocalReport -and !$Force)
         $Body = $file|get-content -raw|convertfrom-json
     }
 }
-else 
+
+if([string]::IsNullOrEmpty($body)) 
 {
     #Creating report of applications installed on wow6432. not shoing the items that doesnet have a displayname
     Write-host "Getting Installed Software from registry"
@@ -137,7 +138,7 @@ else
     $Body|ConvertTo-Json -Depth 3|Out-File $ReportFile
 }
 
-Write-host "`n`n## CLEANUP ##"
+Write-host "`n`n## CLEANUP ## $ReportFile"
 Write-Host "Total applications found $($body.applications.count)"
 Write-Host "Checking if any thing references local username or machine"
 for ($i = 0; $i -lt $body.applications.count; $i++) {
@@ -171,6 +172,7 @@ if(!$Force)
 }
 
 $URI = "$ReportingURl`?ID=$ComputerID"
-Write-Host "Uploading to $uri"
+Write-Host "Uploading (slowly) to $uri"
+[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
 Invoke-RestMethod -Method "Post" -Uri $URI -Body $($body|ConvertTo-Json -Depth 99)
 Write-Host "Done!"
