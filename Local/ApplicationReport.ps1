@@ -44,7 +44,7 @@ if([string]::IsNullOrEmpty($ID) -or $id -eq "FFFFFFFF-FFFF-FFFF-FFFF-FFFFFFFFFFF
 }
 
 #Scale all the numbers down to INT64
-$IDNumber = [long]"$([regex]::Matches($ID,"(\d)").value -join '')".Substring(0,18)
+$IDNumber = [long]"$(([regex]::Matches($ID,"(\d)").value|select -first 18) -join '')"
 #Modulate it down to Int32. get random only support Int32
 $IDNumber = $IDNumber%[int]::MaxValue
 #Get a random numer between IdNumber and 4000
