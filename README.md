@@ -3,11 +3,13 @@
 ## Local Script
 The local application (under .\local)
 ```
-Local\
----ApplicationReport.ps1
----Run-FnDev.ps1
----Run-FnLocal.ps1
+|Local
+-|ApplicationReport.ps1
+-|Run-FnDev.ps1
+-|Run-FnLocal.ps1
+-|Run
 ```
+To run the actual script start "Run"
 
 #### ApplicationReport.ps1
 ```

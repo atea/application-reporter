@@ -152,6 +152,7 @@ for ($i = 0; $i -lt $body.applications.count; $i++) {
         Write-Verbose "New reported InstallLocation:'$($Body.applications[$i].InstallLocation)'"
     }
 }
+
 Write-host "`n`n## UPLOAD ##"
 if(!$Force)
 {
