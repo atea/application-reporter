@@ -33,6 +33,9 @@ Function Get-Choice
 }
 
 
+#Set web requests to use tls1.2 instead of default <tls1.2
+[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+
 #Get Computer GUID, set from OEM
 $ID = (Get-CimInstance -Class Win32_ComputerSystemProduct).UUID
 #IF GUID is NIL or "FF...", it means that OEM didnt add this key. fo to fallback.
@@ -51,6 +54,14 @@ $IDNumber = $IDNumber%[int]::MaxValue
 $IDNumber = Get-random -SetSeed $IdNumber -Maximum 4000
 
 Write-host "`n`n## STARTUP ##"
+Write-host "Testing Internet connection"
+try{
+    [void](Invoke-RestMethod -Uri $ReportingURl -Method Get)
+}
+catch{
+    Throw "There was an issue connecting to Internet: $_"
+}
+
 Write-host "In order to not willfully give any user identifying information we will only use a hashed version of your ComputerName"
 $ComputerID = $env:COMPUTERNAME
 Write-Host "Hashing Computername $IDNumber times"
@@ -174,6 +185,10 @@ if(!$Force)
 
 $URI = "$ReportingURl`?ID=$ComputerID"
 Write-Host "Uploading (slowly) to $uri"
-[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+
 Invoke-RestMethod -Method "Post" -Uri $URI -Body $($body|ConvertTo-Json -Depth 99)
 Write-Host "Done!"
+# if(!$Force)
+# {
+#     pause
+# }

@@ -1,6 +1,6 @@
 @{
     Project = @{
-        Pipeline = "Dev"
+        Pipeline = "Prod"
         Name = "ConsultApplication"
         ConfigName = "Config"
         #Config should never be more than 2 levels

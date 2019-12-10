@@ -14,13 +14,18 @@ Write-Host "PowerShell HTTP trigger function processed a request."
 $Body = "Something happened.."
 
 try{
-    if($Request.Query.ID)
+    if($Request.Query.ID -and $Request.Method -eq "POST")
     {
         $upload = $Request.Body|ConvertFrom-Json
         $Body = "Applications: $($upload.applications.count) ($(@(($upload.applications|select -Unique IDhash)).count) Unique)"
         $Containter = Get-FnBlobContainer -CreateIfNotExists -Connectionstring $env:AzureWebJobsStorage -Container "reports"
         $Blockblob = $Containter.GetBlockBlobReference("$($Request.Query.ID)-$([datetime]::UtcNow.ToString("yyMMddHHmm")).json")
         $Blockblob.UploadTextAsync(($Upload.applications|ConvertTo-Json))
+        $status = [HttpStatusCode]::OK
+    }
+    elseif($request.Query.Ping)
+    {
+        $body = "Pong"
         $status = [HttpStatusCode]::OK
     }
     else {
