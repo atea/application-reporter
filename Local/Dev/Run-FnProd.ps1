@@ -1,0 +1,1 @@
+& "$PSScriptRoot\ApplicationReport.ps1" -ReportingURl 'https://prodconsultapplicationfn.azurewebsites.net/api/Upload' -force:$false
