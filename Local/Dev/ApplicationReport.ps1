@@ -1,7 +1,7 @@
 [CmdletBinding()]
 Param(
     [ValidateNotNullOrEmpty()]
-    [String]$ReportingURl,
+    [String]$ReportingURL,
     [Switch]$Force,
     [String]$ReportFolder = $PSScriptRoot
 )
@@ -56,12 +56,22 @@ $IDNumber = Get-random -SetSeed $IdNumber -Maximum 4000
 Write-host "`n`n## STARTUP ##"
 Write-host "Testing Internet connection"
 try{
-    [void](Invoke-RestMethod -Uri $ReportingURl -Method Get)
+    $TestURI = "$ReportingURL"
+    Write-Host "Sending a test ping to '$TestURI' to check internet connectivity and ssl trust"
+    [void](Invoke-RestMethod -Uri "$TestURI" -Method Get)
+}
+catch [System.Security.Authentication.AuthenticationException]{
+    Write-Warning "Something went wrong..Most likely, there is a MITM reading HTTPS requests (Firewall?).."
+    Throw "There was an issue connecting to Internet: $_"
+    # $a = Get-Choice @GetChoiceParam
+    # Write-Warning "There "
+    # Throw "There was an issue connecting to Internet (SSL): $_"
 }
 catch{
     Throw "There was an issue connecting to Internet: $_"
 }
-
+Write-host
+Write-host
 Write-host "In order to not willfully give any user identifying information we will only use a hashed version of your ComputerName"
 $ComputerID = $env:COMPUTERNAME
 Write-Host "Hashing Computername $IDNumber times"
@@ -158,8 +168,8 @@ for ($i = 0; $i -lt $body.applications.count; $i++) {
     #If install location references username, replace them with machine ID
     if($this.installLocation -like "*$env:USERNAME*")
     {
-        Write-Host "Replacing username with machine ID @ '$($this.Name)' InstallLocation"
-        $Body.applications[$i].InstallLocation = $this.InstallLocation.replace($env:USERNAME,$ComputerID)
+        Write-Host "Replacing username with 'User' @ '$($this.Name)' InstallLocation"
+        $Body.applications[$i].InstallLocation = $this.InstallLocation.replace($env:USERNAME,'User')
         Write-Verbose "New reported InstallLocation:'$($Body.applications[$i].InstallLocation)'"
     }
 }
@@ -183,7 +193,7 @@ if(!$Force)
     }
 }
 
-$URI = "$ReportingURl`?ID=$ComputerID"
+$URI = "$ReportingURl"
 Write-Host "Uploading (slowly) to $uri"
 
 Invoke-RestMethod -Method "Post" -Uri $URI -Body $($body|ConvertTo-Json -Depth 99)

@@ -2,6 +2,6 @@
 # See https://aka.ms/functionsmanageddependency for additional information.
 #
 @{
-    'Az.storage' = '2.*'
+    'Az.storage' = '1.*'
     'azTable' = "2.*"
 }

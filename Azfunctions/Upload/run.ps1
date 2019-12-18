@@ -29,10 +29,14 @@ try{
                 $status = [HttpStatusCode]::BadRequest
             }
             else {
+                Write-Information "Got a new document from $($upload.computername)"
                 $Body = "Applications: $($upload.applications.count) ($(@(($upload.applications|select -Unique IDhash)).count) Unique)"
                 $Containter = Get-FnBlobContainer -CreateIfNotExists -Connectionstring $env:AzureWebJobsStorage -Container "reports"
                 $Blockblob = $Containter.GetBlockBlobReference("$($upload.ComputerName)-$([datetime]::UtcNow.ToString("yyMMddHHmm")).json")
+                Write-Information "Uploading to $($Containter.Name)\$($Blockblob.Name)"
                 $Blockblob.UploadTextAsync(($Upload.applications|ConvertTo-Json -Depth 10))
+                $status = [HttpStatusCode]::OK
+
             }
         }
         else {
