@@ -1,1 +1,1 @@
-& "$PSScriptRoot\ApplicationReport.ps1" -ReportingURL 'http://devconsultapplicationfn.azurewebsites.net/api/Upload' -force:$false
+& "$PSScriptRoot\ApplicationReport.ps1" -ReportingURL 'https://prodconsultapplicationfn.azurewebsites.net/api/Upload' -force:$false

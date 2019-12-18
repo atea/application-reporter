@@ -56,7 +56,7 @@ $IDNumber = Get-random -SetSeed $IdNumber -Maximum 4000
 Write-host "`n`n## STARTUP ##"
 Write-host "Testing Internet connection"
 try{
-    $TestURI = "$ReportingURL`?ping=true"
+    $TestURI = "$ReportingURL"
     Write-Host "Sending a test ping to '$TestURI' to check internet connectivity and ssl trust"
     [void](Invoke-RestMethod -Uri "$TestURI" -Method Get)
 }
@@ -193,7 +193,7 @@ if(!$Force)
     }
 }
 
-$URI = "$ReportingURl`?ID=$ComputerID"
+$URI = "$ReportingURl"
 Write-Host "Uploading (slowly) to $uri"
 
 Invoke-RestMethod -Method "Post" -Uri $URI -Body $($body|ConvertTo-Json -Depth 99)
